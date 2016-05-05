@@ -9,6 +9,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.ConnectActivity">
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,6 +30,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/editIP"
         android:hint="@string/default_ip"
+        android:singleLine="true"
         android:layout_above="@+id/labelEditPort"/>
 
     <TextView
@@ -35,13 +38,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/labelEditPort"
         android:text="@string/edit_IPPort"
-        android:hint="@string/default_port"
         android:layout_above="@+id/editPort"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editPort"
+        android:singleLine="true"
+        android:hint="@string/default_port"
+        android:inputType="number"
         android:layout_above="@+id/button"/>
 
 
@@ -53,4 +58,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="onButtonClick"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressConnect"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
 </RelativeLayout>

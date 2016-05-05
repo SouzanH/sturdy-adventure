@@ -27,45 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         final Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            ip = extras.getString(ConnectActivity.EXTRA_IP_ADDRESS);
-            port = extras.getString(ConnectActivity.EXTRA_IP_PORT);
-
-            connectToMachine();
-        }
+        // TODO get connection object
+//        if (extras != null) {
+//            ip = extras.getString(ConnectActivity.EXTRA_IP_ADDRESS);
+//            port = extras.getString(ConnectActivity.EXTRA_IP_PORT);
+//
+//        }
     }
 
-    private void connectToMachine() {
-        new ServerConnector().execute();
 
-    }
-
-    private class ServerConnector extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                Thread.sleep(1000);
-                // 20 % failure rate
-                return Math.random() < 0.8;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean successful) {
-            super.onPostExecute(successful);
-            if (!successful) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to server", Toast.LENGTH_SHORT);
-                toast.show();
-                finish();
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "Connection successful", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
-    }
 }
