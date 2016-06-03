@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import ch.fhnw.android_labyrinth.activity.MainActivity;
+
 public class ClickView extends View {
 
     private static final String TAG = "ClickView";
@@ -91,5 +93,7 @@ public class ClickView extends View {
 
         this.clickPosX = x;
         this.clickPosY = y;
+
+        ((MainActivity)getContext()).moveTo((int)(clickPosX /x_factor), (int)(clickPosY /y_factor));
     }
 }

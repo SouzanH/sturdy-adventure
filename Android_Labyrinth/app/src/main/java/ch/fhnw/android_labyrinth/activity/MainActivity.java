@@ -1,19 +1,20 @@
 package ch.fhnw.android_labyrinth.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.widget.Toast;
+import android.util.Log;
 
+import ch.fhnw.android_labyrinth.LabyrinthRegistry;
 import ch.fhnw.android_labyrinth.view.ClickView;
+import oscP5.OscMessage;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final long TIMEOUT = 200;
 
-    private String ip;
-    private String port;
+    private long lastSent;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -25,15 +26,35 @@ public class MainActivity extends AppCompatActivity {
         view.setDisplayMetrics(displayMetrics);
         setContentView(view);
 
-
-        final Bundle extras = getIntent().getExtras();
-        // TODO get connection object
-//        if (extras != null) {
-//            ip = extras.getString(ConnectActivity.EXTRA_IP_ADDRESS);
-//            port = extras.getString(ConnectActivity.EXTRA_IP_PORT);
-//
-//        }
     }
 
+    public void moveTo(int x, int y) {
 
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastSent > TIMEOUT ){
+            OscMessage oscMessage = new OscMessage("Lab");
+
+            // Limit values to maximum allowed
+            if (x < 0) x = 0;
+            if (x > 180) x = 180;
+            if (y < 0) y = 0;
+            if (y > 180) y = 180;
+
+            oscMessage.add(0);
+            oscMessage.add(x);
+            oscMessage.add(1);
+            oscMessage.add(y);
+
+            Log.d(TAG, "Sending messages to server");
+            LabyrinthRegistry.oscP5.send(oscMessage);
+            lastSent = currentTime;
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TODO proper disconnect OscP5
+    }
 }

@@ -10,11 +10,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import ch.fhnw.android_labyrinth.LabyrinthRegistry;
 import ch.fhnw.android_labyrinth.R;
+import oscP5.OscP5;
+import oscP5.OscProperties;
 
 public class ConnectActivity extends AppCompatActivity {
-
-    public static final String EXTRA_CONNECTION = "EXTRA_CONNECTION";
 
     private static final String SERVER_PREFS = "ServerPrefs";
 
@@ -52,37 +53,41 @@ public class ConnectActivity extends AppCompatActivity {
 
     private void connectToMachine() {
         pbConnect.setVisibility(View.VISIBLE);
-        new ServerConnector().execute();
+        String host = "".equals(etIp.getText().toString()) ? DEFAULT_IP : etIp.getText().toString();
+        String port = "".equals(etPort.getText().toString()) ? DEFAULT_PORT : etPort.getText().toString();
+        new ServerConnector().execute(host, port);
 
     }
 
-    private class ServerConnector extends AsyncTask<Void, Void, Boolean> {
+    private class ServerConnector extends AsyncTask<String, Void, OscP5> {
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                Thread.sleep(1000);
-                // 20 % failure rate
-                return Math.random() < 0.8;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        protected OscP5 doInBackground(String... input) {
 
-            return false;
+            OscProperties oscProperties = new OscProperties() ;
+            oscProperties.setNetworkProtocol(OscProperties.TCP);
+            oscProperties.setRemoteAddress(input[0], Integer.parseInt(input[1]));
+
+            return new OscP5(this, oscProperties);
         }
 
         @Override
-        protected void onPostExecute(Boolean successful) {
-            super.onPostExecute(successful);
+        protected void onPostExecute(OscP5 oscP5) {
+            super.onPostExecute(oscP5);
             pbConnect.setVisibility(View.GONE);
-            if (!successful) {
+            if (oscP5 == null) {
+                // TODO proper fail handling..., oscp5 won't be null in case of error
                 Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to server", Toast.LENGTH_SHORT);
                 toast.show();
 
             } else {
+
                 Toast toast = Toast.makeText(getApplicationContext(), "Connection successful", Toast.LENGTH_SHORT);
                 toast.show();
 
+
+
+                LabyrinthRegistry.oscP5 = oscP5;
                 Intent intent = new Intent(ConnectActivity.this, MainActivity.class);
                 startActivity(intent);
             }
