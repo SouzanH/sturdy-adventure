@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import ch.fhnw.android_labyrinth.LabyrinthRegistry;
-import ch.fhnw.android_labyrinth.view.ClickView;
+import ch.fhnw.android_labyrinth.view.SensorView;
 import oscP5.OscMessage;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private static final long TIMEOUT = 200;
 
     private long lastSent;
+    private SensorView view;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -22,10 +23,22 @@ public class MainActivity extends AppCompatActivity {
 
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        final ClickView view = new ClickView(this);
+        view = new SensorView(this);
         view.setDisplayMetrics(displayMetrics);
         setContentView(view);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        view.enableSensor();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        view.disableSensor();
     }
 
     public void moveTo(int x, int y) {
@@ -55,6 +68,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TODO proper disconnect OscP5
+
     }
 }
