@@ -33,6 +33,7 @@ public class ClickView extends View {
         // create the Paint and set its color
         paint = new Paint();
         paint.setColor(Color.YELLOW);
+        paint.setTextSize(40);
 
         setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -70,8 +71,8 @@ public class ClickView extends View {
         if (lineDrawEnabled) {
             canvas.drawLine(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, clickPosX, clickPosY, paint);
             canvas.drawCircle(clickPosX, clickPosY, 8, paint);
-            canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 13, paint);
-            canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 26, paint);
+            canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 53, paint);
+            canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 106, paint);
         }
     }
 

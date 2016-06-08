@@ -1,10 +1,10 @@
 package ch.fhnw.android_labyrinth.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -15,7 +15,7 @@ import ch.fhnw.android_labyrinth.R;
 import oscP5.OscP5;
 import oscP5.OscProperties;
 
-public class ConnectActivity extends AppCompatActivity {
+public class ConnectActivity extends Activity {
 
     private static final String SERVER_PREFS = "ServerPrefs";
 
