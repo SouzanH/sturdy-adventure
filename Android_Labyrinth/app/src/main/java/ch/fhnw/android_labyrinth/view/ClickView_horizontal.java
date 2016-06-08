@@ -11,7 +11,7 @@ import android.view.View;
 
 import ch.fhnw.android_labyrinth.activity.MainActivity;
 
-public class ClickView extends View {
+public class ClickView_horizontal extends View {
 
     private static final String TAG = "ClickView";
 
@@ -20,20 +20,21 @@ public class ClickView extends View {
     private float x_factor = 1;
     private float y_factor = 1;
 
-    private boolean lineDrawEnabled = false;
+    private boolean lineDrawEnabled = true;
     private float clickPosX = 0;
     private float clickPosY = 0;
 
     private DisplayMetrics displayMetrics;
 
 
-    public ClickView(final Context context) {
+    public ClickView_horizontal(final Context context) {
         super(context);
 
         // create the Paint and set its color
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setTextSize(40);
+
 
         setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -62,6 +63,7 @@ public class ClickView extends View {
 
         // Draw a small circle in the middle
         paint.setColor(Color.WHITE);
+        canvas.drawLine(0.0f, displayMetrics.heightPixels/2f, displayMetrics.widthPixels, displayMetrics.heightPixels/2f, paint);
         canvas.drawCircle(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, 10, paint);
         paint.setColor(Color.DKGRAY);
         canvas.drawCircle(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, 9, paint);
@@ -69,8 +71,8 @@ public class ClickView extends View {
 
         // Draw a line to the selected point
         if (lineDrawEnabled) {
-            canvas.drawLine(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, clickPosX, clickPosY, paint);
-            canvas.drawCircle(clickPosX, clickPosY, 8, paint);
+
+            canvas.drawCircle(clickPosX, displayMetrics.heightPixels/2f, 8, paint);
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 53, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 106, paint);
         }
@@ -79,6 +81,7 @@ public class ClickView extends View {
     public void setDisplayMetrics(DisplayMetrics displayMetrics) {
         this.displayMetrics = displayMetrics;
         calculateDisplaySize();
+        clickPosX = displayMetrics.widthPixels/2.0f;
     }
 
     private void calculateDisplaySize() {
