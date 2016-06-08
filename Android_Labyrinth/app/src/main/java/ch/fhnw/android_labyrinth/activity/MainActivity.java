@@ -7,6 +7,7 @@ import android.util.Log;
 
 import ch.fhnw.android_labyrinth.LabyrinthRegistry;
 import ch.fhnw.android_labyrinth.view.ClickView_horizontal;
+import ch.fhnw.android_labyrinth.view.ClickView_vertical;
 import oscP5.OscMessage;
 
 public class MainActivity extends Activity {
@@ -15,7 +16,7 @@ public class MainActivity extends Activity {
     private static final long TIMEOUT = 20;
 
     private long lastSent;
-    private ClickView_horizontal view;
+    private ClickView_vertical view;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class MainActivity extends Activity {
 
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view = new ClickView_horizontal(this);
+        view = new ClickView_vertical(this);
         view.setDisplayMetrics(displayMetrics);
         setContentView(view);
 
