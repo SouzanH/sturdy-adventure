@@ -18,9 +18,10 @@ import android.view.WindowManager;
 
 import java.util.List;
 
+import ch.fhnw.android_labyrinth.OrientationListener;
 import ch.fhnw.android_labyrinth.activity.MainActivity;
 
-public class SensorView extends View implements SensorEventListener {
+public class SensorView extends View implements OrientationListener {
 
     private static final String TAG = "SensorView";
     private final Context context;
@@ -99,93 +100,86 @@ public class SensorView extends View implements SensorEventListener {
         ((MainActivity)getContext()).moveTo((int)(clickPosX /x_factor), (int)(clickPosY /y_factor));
     }
 
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//
+//        if (mLastAccuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+//            return;
+//        }
+//
+//        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+//            updatePosition(event.values);
+//        }
+//    }
+
+//    private void updatePosition(float[] rotationVector) {
+//
+//        float[] rotationMatrix = new float[9];
+//
+//        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
+//
+//        final int worldAxisForDeviceAxisX;
+//        final int worldAxisForDeviceAxisY;
+//
+//        switch (mWindowManager.getDefaultDisplay().getRotation()) {
+//            case Surface.ROTATION_0:
+//            default:
+//                worldAxisForDeviceAxisX = SensorManager.AXIS_X;
+//                worldAxisForDeviceAxisY = SensorManager.AXIS_Z;
+//                break;
+//            case Surface.ROTATION_90:
+//                worldAxisForDeviceAxisX = SensorManager.AXIS_Z;
+//                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_X;
+//                break;
+//            case Surface.ROTATION_180:
+//                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_X;
+//                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_Z;
+//                break;
+//            case Surface.ROTATION_270:
+//                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_Z;
+//                worldAxisForDeviceAxisY = SensorManager.AXIS_X;
+//                break;
+//        }
+//
+//        float[] adjustedRotationMatrix = new float[9];
+//        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
+//                worldAxisForDeviceAxisY, adjustedRotationMatrix);
+//
+//        float[] orientation = new float[3];
+//        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
+//
+//        // Convert radians to degrees
+//        float pitch = orientation[1] * -57;
+//        float roll = orientation[2] * -57;
+//
+//        Log.d(TAG, "Pitch: " + pitch);
+//        Log.d(TAG, "Roll:  " + roll);
+//        Log.d(TAG, "-----");
+//    }
+//
+//    public void enableSensor() {
+//        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+//        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+//
+//        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
+//        Log.d(TAG, "Available Sensors: ");
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//            for (Sensor s : sensorList) {
+//                Log.d(TAG, s.getStringType());
+//            }
+//        } else {
+//            for (Sensor s : sensorList) {
+//                Log.d(TAG, "Sensor:" + s.getType());
+//            }
+//        }
+//
+//        boolean registered = sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        Log.d(TAG, "Sensor registered: " + registered);
+//    }
+
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onOrientationChanged(float pitch, float roll) {
 
-        if (mLastAccuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            return;
-        }
-
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            updatePosition(event.values);
-        }
-    }
-
-    private void updatePosition(float[] rotationVector) {
-
-        float[] rotationMatrix = new float[9];
-
-        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
-
-        final int worldAxisForDeviceAxisX;
-        final int worldAxisForDeviceAxisY;
-
-        switch (mWindowManager.getDefaultDisplay().getRotation()) {
-            case Surface.ROTATION_0:
-            default:
-                worldAxisForDeviceAxisX = SensorManager.AXIS_X;
-                worldAxisForDeviceAxisY = SensorManager.AXIS_Z;
-                break;
-            case Surface.ROTATION_90:
-                worldAxisForDeviceAxisX = SensorManager.AXIS_Z;
-                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_X;
-                break;
-            case Surface.ROTATION_180:
-                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_X;
-                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_Z;
-                break;
-            case Surface.ROTATION_270:
-                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_Z;
-                worldAxisForDeviceAxisY = SensorManager.AXIS_X;
-                break;
-        }
-
-        float[] adjustedRotationMatrix = new float[9];
-        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
-                worldAxisForDeviceAxisY, adjustedRotationMatrix);
-
-        float[] orientation = new float[3];
-        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
-
-        // Convert radians to degrees
-        float pitch = orientation[1] * -57;
-        float roll = orientation[2] * -57;
-
-        Log.d(TAG, "Pitch: " + pitch);
-        Log.d(TAG, "Roll:  " + roll);
-        Log.d(TAG, "-----");
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        if (mLastAccuracy != accuracy) {
-            mLastAccuracy = accuracy;
-        }
-    }
-
-    public void disableSensor() {
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensorManager.unregisterListener(this);
-    }
-
-    public void enableSensor() {
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        Log.d(TAG, "Available Sensors: ");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            for (Sensor s : sensorList) {
-                Log.d(TAG, s.getStringType());
-            }
-        } else {
-            for (Sensor s : sensorList) {
-                Log.d(TAG, "Sensor:" + s.getType());
-            }
-        }
-
-        boolean registered = sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        Log.d(TAG, "Sensor registered: " + registered);
     }
 }
