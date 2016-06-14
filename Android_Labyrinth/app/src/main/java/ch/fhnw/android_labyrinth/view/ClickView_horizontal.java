@@ -64,16 +64,16 @@ public class ClickView_horizontal extends View {
 
         // Draw a small circle in the middle
         paint.setColor(Color.WHITE);
-        canvas.drawLine(0.0f, displayMetrics.heightPixels/2f, displayMetrics.widthPixels, displayMetrics.heightPixels/2f, paint);
-        canvas.drawCircle(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, 10, paint);
+        canvas.drawLine(0.0f, displayMetrics.heightPixels/2f, displayMetrics.widthPixels*2, displayMetrics.heightPixels/2f, paint);
+        canvas.drawCircle(displayMetrics.widthPixels*2/2f, displayMetrics.heightPixels/2f, 10, paint);
         paint.setColor(Color.DKGRAY);
-        canvas.drawCircle(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, 9, paint);
+        canvas.drawCircle(displayMetrics.widthPixels*2/2f, displayMetrics.heightPixels/2f, 9, paint);
         paint.setColor(Color.YELLOW);
 
         // Draw a line to the selected point
         if (lineDrawEnabled) {
 
-            canvas.drawCircle(clickPosX, displayMetrics.heightPixels/2f, 8, paint);
+            canvas.drawCircle(clickPosX*2, displayMetrics.heightPixels/2f, 8, paint);
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 53, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 106, paint);
         }
@@ -81,12 +81,13 @@ public class ClickView_horizontal extends View {
 
     public void setDisplayMetrics(DisplayMetrics displayMetrics) {
         this.displayMetrics = displayMetrics;
+        this.displayMetrics.widthPixels=displayMetrics.widthPixels/2;
         calculateDisplaySize();
         clickPosX = displayMetrics.widthPixels/2.0f;
     }
 
     private void calculateDisplaySize() {
-        this.x_factor = displayMetrics.widthPixels / 180f;
+        this.x_factor = displayMetrics.widthPixels /(2f* 180f);
         this.y_factor = displayMetrics.heightPixels / 180f;
 
         Log.d(TAG, "Display width in px is " + displayMetrics.widthPixels);

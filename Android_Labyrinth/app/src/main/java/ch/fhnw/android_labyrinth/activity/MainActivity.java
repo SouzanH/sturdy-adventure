@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
         clickViewVertical.setDisplayMetrics(displayMetrics);
 
         clickViewHorizontal = (ClickView_horizontal) findViewById(R.id.clickview_horizontal);
-        clickViewHorizontal.setDisplayMetrics(displayMetrics);
+       clickViewHorizontal.setDisplayMetrics(displayMetrics);
     }
 
     @Override

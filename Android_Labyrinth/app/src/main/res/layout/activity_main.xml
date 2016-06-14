@@ -4,21 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/activity_main"
     tools:context=".activity.MainActivity">
 
-    <ch.fhnw.android_labyrinth.view.ClickView_vertical
-        android:id="@+id/clickview_vertical"
+    <ch.fhnw.android_labyrinth.view.ClickView_horizontal
+        android:id="@+id/clickview_horizontal"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
 
-    <ch.fhnw.android_labyrinth.view.ClickView_horizontal
-        android:id="@+id/clickview_horizontal"
+    <ch.fhnw.android_labyrinth.view.ClickView_vertical
+        android:id="@+id/clickview_vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
