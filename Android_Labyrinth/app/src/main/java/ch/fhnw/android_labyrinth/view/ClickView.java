@@ -25,6 +25,7 @@ public class ClickView extends View {
     private float clickPosY = 0;
 
     private DisplayMetrics displayMetrics;
+    private final Paint colorChangeOrientation;
 
 
     public ClickView(final Context context) {
@@ -34,6 +35,10 @@ public class ClickView extends View {
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setTextSize(40);
+
+
+        colorChangeOrientation = new Paint();
+        colorChangeOrientation.setColor(Color.RED);
 
         setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -74,6 +79,13 @@ public class ClickView extends View {
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 53, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 106, paint);
         }
+
+
+        canvas.drawRect(
+                (float) (displayMetrics.widthPixels*.8),
+                (float) (displayMetrics.heightPixels * .98),
+                (float) (displayMetrics.widthPixels * .98),
+                (float) (displayMetrics.heightPixels * .8), colorChangeOrientation);
     }
 
     public void setDisplayMetrics(DisplayMetrics displayMetrics) {

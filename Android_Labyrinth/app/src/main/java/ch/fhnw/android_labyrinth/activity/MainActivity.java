@@ -20,7 +20,7 @@ public class MainActivity extends Activity implements OrientationListener {
     private static MainActivity CONTEXT;
 
     private long lastSent;
-    private SensorView view;
+    private SensorView sensorView;
     private float pitchMin;
     private float pitchMax;
     private float rollMin;
@@ -38,10 +38,9 @@ public class MainActivity extends Activity implements OrientationListener {
 
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view = new SensorView(this);
-        view.setDisplayMetrics(displayMetrics);
-        setContentView(view);
 
+        sensorView = new SensorView(this);
+        sensorView.setDisplayMetrics(displayMetrics);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class MainActivity extends Activity implements OrientationListener {
 
             Log.d(TAG, "(x, y): (" + x + "," + y + ")");
 
-//            Log.d(TAG, "Sending messages to server");
+            Log.d(TAG, "Sending messages to server");
             if (LabyrinthRegistry.oscP5 != null) {
                 LabyrinthRegistry.oscP5.send(oscMessage);
             } else {
@@ -100,16 +99,11 @@ public class MainActivity extends Activity implements OrientationListener {
     @Override
     public void onOrientationChanged(float pitch, float roll) {
 
-//        Log.d(TAG, "--------");
-//        Log.d(TAG, "Pitch: " + pitch);
-//        Log.d(TAG, "Roll:  " + roll);
-//        Log.d(TAG, "--------");
-
         int pitchInt = (int) (pitch * 90f + 90);
         int rollInt = (int) (roll * 90f + 90);
 
         moveTo(pitchInt, rollInt);
-        view.setXYParams(pitchInt, rollInt);
+        sensorView.setXYParams(pitchInt, rollInt);
 
         if (pitch < pitchMin) {
             pitchMin = pitch;

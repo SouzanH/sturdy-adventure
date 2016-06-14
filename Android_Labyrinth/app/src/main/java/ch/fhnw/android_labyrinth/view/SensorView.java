@@ -2,24 +2,15 @@ package ch.fhnw.android_labyrinth.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Surface;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-
-import java.util.List;
-
-import ch.fhnw.android_labyrinth.OrientationListener;
-import ch.fhnw.android_labyrinth.activity.MainActivity;
 
 public class SensorView extends View {
 
@@ -28,18 +19,16 @@ public class SensorView extends View {
     private final WindowManager mWindowManager;
 
     private Paint paint;
+    private final Paint colorChangeOrientation;
 
     private float x_factor = 1;
     private float y_factor = 1;
 
     private boolean lineDrawEnabled = false;
-    private float clickPosX = 0;
-    private float clickPosY = 0;
+    private float clickPosX = 90;
+    private float clickPosY = 90;
 
-    private float mPitch = 0; // Degrees
-    private float mRoll = 0; // Degrees, left roll is positive
-
-    private int mLastAccuracy;
+    private final float buttonHeight = 0.85f;
 
     private DisplayMetrics displayMetrics;
 
@@ -53,6 +42,10 @@ public class SensorView extends View {
         // create the Paint and set its color
         paint = new Paint();
         paint.setColor(Color.YELLOW);
+
+        colorChangeOrientation = new Paint();
+        colorChangeOrientation.setColor(Color.RED);
+
     }
 
     @Override
@@ -71,21 +64,40 @@ public class SensorView extends View {
 
         // Draw a line to the selected point
         if (lineDrawEnabled) {
-            float stepSizeWidth = displayMetrics.widthPixels / 180;
-            float stepSizeHeight = displayMetrics.heightPixels / 180;
+            final float stepSizeWidth = displayMetrics.widthPixels / 180;
+            final float stepSizeHeight = displayMetrics.heightPixels / 180;
 
             canvas.drawLine(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, clickPosX * stepSizeWidth, clickPosY * stepSizeHeight, paint);
-
 
             canvas.drawCircle(clickPosX * stepSizeWidth, clickPosY * stepSizeHeight, 8, paint);
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 13, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 26, paint);
         }
+
+        canvas.drawRect(
+                0f,
+                (float) (displayMetrics.heightPixels * buttonHeight),
+                (float) displayMetrics.widthPixels,
+                (float) displayMetrics.heightPixels,
+                colorChangeOrientation);
     }
 
-    public void setDisplayMetrics(DisplayMetrics displayMetrics) {
+    public void setDisplayMetrics(final DisplayMetrics displayMetrics) {
         this.displayMetrics = displayMetrics;
         calculateDisplaySize();
+
+        setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                float y = motionEvent.getY();
+                Log.d(TAG, "Touchend: " + y);
+                if (y > displayMetrics.heightPixels * buttonHeight) {
+                    ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    Log.d(TAG, "Orientation change requested");
+                }
+                return true;
+            }
+        });
     }
 
     private void calculateDisplaySize() {
@@ -110,83 +122,4 @@ public class SensorView extends View {
 
         invalidate();
     }
-
-//    @Override
-//    public void onSensorChanged(SensorEvent event) {
-//
-//        if (mLastAccuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-//            return;
-//        }
-//
-//        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-//            updatePosition(event.values);
-//        }
-//    }
-
-//    private void updatePosition(float[] rotationVector) {
-//
-//        float[] rotationMatrix = new float[9];
-//
-//        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
-//
-//        final int worldAxisForDeviceAxisX;
-//        final int worldAxisForDeviceAxisY;
-//
-//        switch (mWindowManager.getDefaultDisplay().getRotation()) {
-//            case Surface.ROTATION_0:
-//            default:
-//                worldAxisForDeviceAxisX = SensorManager.AXIS_X;
-//                worldAxisForDeviceAxisY = SensorManager.AXIS_Z;
-//                break;
-//            case Surface.ROTATION_90:
-//                worldAxisForDeviceAxisX = SensorManager.AXIS_Z;
-//                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_X;
-//                break;
-//            case Surface.ROTATION_180:
-//                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_X;
-//                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_Z;
-//                break;
-//            case Surface.ROTATION_270:
-//                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_Z;
-//                worldAxisForDeviceAxisY = SensorManager.AXIS_X;
-//                break;
-//        }
-//
-//        float[] adjustedRotationMatrix = new float[9];
-//        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
-//                worldAxisForDeviceAxisY, adjustedRotationMatrix);
-//
-//        float[] orientation = new float[3];
-//        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
-//
-//        // Convert radians to degrees
-//        float pitch = orientation[1] * -57;
-//        float roll = orientation[2] * -57;
-//
-//        Log.d(TAG, "Pitch: " + pitch);
-//        Log.d(TAG, "Roll:  " + roll);
-//        Log.d(TAG, "-----");
-//    }
-//
-//    public void enableSensor() {
-//        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-//        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-//
-//        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
-//        Log.d(TAG, "Available Sensors: ");
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-//            for (Sensor s : sensorList) {
-//                Log.d(TAG, s.getStringType());
-//            }
-//        } else {
-//            for (Sensor s : sensorList) {
-//                Log.d(TAG, "Sensor:" + s.getType());
-//            }
-//        }
-//
-//        boolean registered = sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//        Log.d(TAG, "Sensor registered: " + registered);
-//    }
-
 }
