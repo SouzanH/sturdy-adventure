@@ -15,7 +15,7 @@ import oscP5.OscMessage;
 public class MainActivity extends Activity implements OrientationListener {
 
     private static final String TAG = "MainActivity";
-    private static final long TIMEOUT = 200;
+    private static final long TIMEOUT = 1000;
 
     private static MainActivity CONTEXT;
 
@@ -25,6 +25,10 @@ public class MainActivity extends Activity implements OrientationListener {
     private float pitchMax;
     private float rollMin;
     private float rollMax;
+
+    public static Context getContext() {
+        return CONTEXT;
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -44,11 +48,9 @@ public class MainActivity extends Activity implements OrientationListener {
     protected void onResume() {
         super.onResume();
         OrientationProvider orientationProvider = OrientationProvider.getInstance();
-        if (orientationProvider.isSupported()) {
-            orientationProvider.start(this);
-        } else {
-            Log.d(TAG, "Orientation Sensor not supported.");
-        }
+
+        orientationProvider.start(this);
+
 
     }
 
@@ -62,7 +64,7 @@ public class MainActivity extends Activity implements OrientationListener {
     public void moveTo(int x, int y) {
 
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastSent > TIMEOUT ){
+        if (currentTime - lastSent > TIMEOUT) {
             OscMessage oscMessage = new OscMessage("Lab");
 
             // Limit values to maximum allowed
@@ -76,11 +78,13 @@ public class MainActivity extends Activity implements OrientationListener {
             oscMessage.add(1);
             oscMessage.add(y);
 
-            Log.d(TAG, "Sending messages to server");
+            Log.d(TAG, "(x, y): (" + x + "," + y + ")");
+
+//            Log.d(TAG, "Sending messages to server");
             if (LabyrinthRegistry.oscP5 != null) {
                 LabyrinthRegistry.oscP5.send(oscMessage);
-            } else{
-                Log.d(TAG, "No connection to device");
+            } else {
+                Log.d(TAG, "No connection to oscP5");
             }
             lastSent = currentTime;
         }
@@ -93,17 +97,20 @@ public class MainActivity extends Activity implements OrientationListener {
 
     }
 
-    public static Context getContext() {
-        return CONTEXT;
-    }
-
     @Override
     public void onOrientationChanged(float pitch, float roll) {
 
-        int pitchInt = (int) (pitch * 12) + 90;
-        int rollInt = (int) (roll * 12) + 90;
+//        Log.d(TAG, "--------");
+//        Log.d(TAG, "Pitch: " + pitch);
+//        Log.d(TAG, "Roll:  " + roll);
+//        Log.d(TAG, "--------");
+
+        int pitchInt = (int) (pitch * 90f + 90);
+        int rollInt = (int) (roll * 90f + 90);
 
         moveTo(pitchInt, rollInt);
+        view.setXYParams(pitchInt, rollInt);
+
         if (pitch < pitchMin) {
             pitchMin = pitch;
             Log.d(TAG, "PitchMin: " + pitchMin);

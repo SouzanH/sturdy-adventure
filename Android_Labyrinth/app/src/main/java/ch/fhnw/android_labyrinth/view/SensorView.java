@@ -21,7 +21,7 @@ import java.util.List;
 import ch.fhnw.android_labyrinth.OrientationListener;
 import ch.fhnw.android_labyrinth.activity.MainActivity;
 
-public class SensorView extends View implements OrientationListener {
+public class SensorView extends View {
 
     private static final String TAG = "SensorView";
     private final Context context;
@@ -71,8 +71,13 @@ public class SensorView extends View implements OrientationListener {
 
         // Draw a line to the selected point
         if (lineDrawEnabled) {
-            canvas.drawLine(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, clickPosX, clickPosY, paint);
-            canvas.drawCircle(clickPosX, clickPosY, 8, paint);
+            float stepSizeWidth = displayMetrics.widthPixels / 180;
+            float stepSizeHeight = displayMetrics.heightPixels / 180;
+
+            canvas.drawLine(displayMetrics.widthPixels/2f, displayMetrics.heightPixels/2f, clickPosX * stepSizeWidth, clickPosY * stepSizeHeight, paint);
+
+
+            canvas.drawCircle(clickPosX * stepSizeWidth, clickPosY * stepSizeHeight, 8, paint);
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 13, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 26, paint);
         }
@@ -89,15 +94,21 @@ public class SensorView extends View implements OrientationListener {
 
         Log.d(TAG, "Display width in px is " + displayMetrics.widthPixels);
         Log.d(TAG, "Display height in px is " + displayMetrics.heightPixels);
+
     }
 
-    private void setXYParams(float x, float y) {
+    /**
+     *
+     * @param x from 0 to 180
+     * @param y from 0 to 180
+     */
+    public void setXYParams(float x, float y) {
         lineDrawEnabled = true;
 
         this.clickPosX = x;
         this.clickPosY = y;
 
-        ((MainActivity)getContext()).moveTo((int)(clickPosX /x_factor), (int)(clickPosY /y_factor));
+        invalidate();
     }
 
 //    @Override
@@ -178,8 +189,4 @@ public class SensorView extends View implements OrientationListener {
 //        Log.d(TAG, "Sensor registered: " + registered);
 //    }
 
-    @Override
-    public void onOrientationChanged(float pitch, float roll) {
-
-    }
 }

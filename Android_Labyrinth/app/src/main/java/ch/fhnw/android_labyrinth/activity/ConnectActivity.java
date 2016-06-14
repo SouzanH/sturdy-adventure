@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -20,6 +21,8 @@ import oscP5.OscP5;
 import oscP5.OscProperties;
 
 public class ConnectActivity extends Activity {
+
+    private static final String TAG = "ConnectActivity";
 
     private static final String SERVER_PREFS = "ServerPrefs";
 
@@ -61,24 +64,24 @@ public class ConnectActivity extends Activity {
         String port = "".equals(etPort.getText().toString()) ? DEFAULT_PORT : etPort.getText().toString();
         ServerConnector serverConnector = new ServerConnector();
         serverConnector.execute(host, port);
-//        try {
-//            OscP5 oscP5 = serverConnector.get(15, TimeUnit.SECONDS);
-//
-//            pbConnect.setVisibility(View.GONE);
-//
-//            Toast toast = Toast.makeText(getApplicationContext(), "Connection successful", Toast.LENGTH_SHORT);
-//            toast.show();
-//
-//            LabyrinthRegistry.oscP5 = oscP5;
-//
+        try {
+            OscP5 oscP5 = serverConnector.get(15, TimeUnit.SECONDS);
+
+            pbConnect.setVisibility(View.GONE);
+
+            Toast toast = Toast.makeText(getApplicationContext(), "Connection successful", Toast.LENGTH_SHORT);
+            toast.show();
+
+            LabyrinthRegistry.oscP5 = oscP5;
+
             Intent intent = new Intent(ConnectActivity.this, MainActivity.class);
             startActivity(intent);
-//        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-//
-//            pbConnect.setVisibility(View.GONE);
-//            Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to server", Toast.LENGTH_SHORT);
-//            toast.show();
-//        }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+
+            pbConnect.setVisibility(View.GONE);
+            Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to server", Toast.LENGTH_SHORT);
+            toast.show();
+        }
 
     }
 
@@ -86,7 +89,11 @@ public class ConnectActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 
-        LabyrinthRegistry.oscP5.stop();
+        try {
+            LabyrinthRegistry.oscP5.stop();
+        } catch (NullPointerException e) {
+            Log.w(TAG, "oscP5 not started.");
+        }
     }
 
     private class ServerConnector extends AsyncTask<String, Void, OscP5> {
