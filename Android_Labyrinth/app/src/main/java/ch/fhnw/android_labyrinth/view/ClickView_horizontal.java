@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,8 +28,8 @@ public class ClickView_horizontal extends View {
     private DisplayMetrics displayMetrics;
 
 
-    public ClickView_horizontal(final Context context) {
-        super(context);
+    public ClickView_horizontal(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
 
         // create the Paint and set its color
         paint = new Paint();

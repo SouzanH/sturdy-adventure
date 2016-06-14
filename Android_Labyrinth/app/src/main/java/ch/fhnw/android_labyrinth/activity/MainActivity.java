@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import ch.fhnw.android_labyrinth.LabyrinthRegistry;
+import ch.fhnw.android_labyrinth.R;
 import ch.fhnw.android_labyrinth.view.ClickView_horizontal;
 import ch.fhnw.android_labyrinth.view.ClickView_vertical;
 import oscP5.OscMessage;
@@ -16,30 +17,33 @@ public class MainActivity extends Activity {
     private static final long TIMEOUT = 20;
 
     private long lastSent;
-    private ClickView_vertical view;
+    private ClickView_vertical clickViewVertical;
+    private ClickView_horizontal clickViewHorizontal;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view = new ClickView_vertical(this);
-        view.setDisplayMetrics(displayMetrics);
-        setContentView(view);
+        clickViewVertical = (ClickView_vertical) findViewById(R.id.clickview_vertical);
+        clickViewVertical.setDisplayMetrics(displayMetrics);
 
+        clickViewHorizontal = (ClickView_horizontal) findViewById(R.id.clickview_horizontal);
+        clickViewHorizontal.setDisplayMetrics(displayMetrics);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-      //  view.enableSensor();
+      //  clickViewVertical.enableSensor();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //view.disableSensor();
+        //clickViewVertical.disableSensor();
     }
 
     public void moveTo(int x, int y) {
