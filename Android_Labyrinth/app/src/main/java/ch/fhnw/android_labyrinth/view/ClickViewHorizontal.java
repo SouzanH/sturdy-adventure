@@ -100,6 +100,6 @@ public class ClickViewHorizontal extends View {
         this.clickPosX = x;
         this.clickPosY = y;
 
-        ((MainActivity)getContext()).moveTo((int)(clickPosX /x_factor), (int)(clickPosY /y_factor));
+        ((MainActivity)getContext()).setX((int)(clickPosX /x_factor/2));
     }
 }

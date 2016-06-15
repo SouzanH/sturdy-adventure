@@ -100,6 +100,6 @@ public class ClickViewVertical extends View {
         this.clickPosX = x;
         this.clickPosY = y;
 
-        ((MainActivity)getContext()).moveTo((int)(clickPosX /x_factor), (int)(clickPosY /y_factor));
+        ((MainActivity)getContext()).setY((int)(clickPosY /y_factor));
     }
 }

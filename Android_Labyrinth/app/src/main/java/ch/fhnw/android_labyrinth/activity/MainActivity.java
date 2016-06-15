@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import ch.fhnw.android_labyrinth.LabyrinthRegistry;
 import ch.fhnw.android_labyrinth.R;
@@ -31,6 +32,8 @@ public class MainActivity extends Activity implements OrientationListener {
     private float pitchMax;
     private float rollMin;
     private float rollMax;
+    private int x;
+    private int y;
 
     public static Context getContext() {
         return CONTEXT;
@@ -71,10 +74,24 @@ public class MainActivity extends Activity implements OrientationListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            OrientationProvider.getInstance().stop();
-        }
+        OrientationProvider.getInstance().stop();
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//
+//        }
 
+    }
+
+    public void setX(int x) {
+        this.x = x;
+
+        Log.d(TAG, "New X Value");
+        moveTo(x, y);
+    }
+
+    public void setY(int y) {
+        this.y = y;
+        Log.d(TAG, "New Y Value");
+        moveTo(x, y);
     }
 
     public void moveTo(int x, int y) {
@@ -139,5 +156,19 @@ public class MainActivity extends Activity implements OrientationListener {
             Log.d(TAG, "RollMax: " + rollMax);
         }
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            OrientationProvider.getInstance().stop();
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            OrientationProvider.getInstance().start(this);
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
     }
 }
