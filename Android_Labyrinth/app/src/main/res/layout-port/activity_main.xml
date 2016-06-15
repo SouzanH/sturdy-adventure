@@ -7,15 +7,10 @@
     android:id="@+id/activity_main"
     tools:context=".activity.MainActivity">
 
-    <ch.fhnw.android_labyrinth.view.ClickView_horizontal
-        android:id="@+id/clickview_horizontal"
+    <ch.fhnw.android_labyrinth.view.SensorView
+        android:id="@+id/sensor_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
 
-    <ch.fhnw.android_labyrinth.view.ClickView_vertical
-        android:id="@+id/clickview_vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
 </LinearLayout>

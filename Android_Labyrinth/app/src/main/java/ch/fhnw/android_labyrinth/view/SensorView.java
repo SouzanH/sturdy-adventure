@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,8 +34,8 @@ public class SensorView extends View {
     private DisplayMetrics displayMetrics;
 
 
-    public SensorView(final Context context) {
-        super(context);
+    public SensorView(final Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
         this.context = context;
 
         mWindowManager = ((Activity)context).getWindow().getWindowManager();

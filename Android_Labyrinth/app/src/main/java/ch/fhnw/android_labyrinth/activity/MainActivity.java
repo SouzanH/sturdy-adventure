@@ -2,14 +2,15 @@ package ch.fhnw.android_labyrinth.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import ch.fhnw.android_labyrinth.LabyrinthRegistry;
 import ch.fhnw.android_labyrinth.R;
-import ch.fhnw.android_labyrinth.view.ClickView_horizontal;
-import ch.fhnw.android_labyrinth.view.ClickView_vertical;
+import ch.fhnw.android_labyrinth.view.ClickViewHorizontal;
+import ch.fhnw.android_labyrinth.view.ClickViewVertical;
 import ch.fhnw.android_labyrinth.OrientationListener;
 import ch.fhnw.android_labyrinth.OrientationProvider;
 import ch.fhnw.android_labyrinth.view.SensorView;
@@ -23,8 +24,8 @@ public class MainActivity extends Activity implements OrientationListener {
     private static MainActivity CONTEXT;
 
     private long lastSent;
-    private ClickView_vertical clickViewVertical;
-    private ClickView_horizontal clickViewHorizontal;
+    private ClickViewVertical clickViewVertical;
+    private ClickViewHorizontal clickViewHorizontal;
     private SensorView sensorView;
     private float pitchMin;
     private float pitchMax;
@@ -44,30 +45,35 @@ public class MainActivity extends Activity implements OrientationListener {
 
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        clickViewVertical = (ClickView_vertical) findViewById(R.id.clickview_vertical);
-        clickViewVertical.setDisplayMetrics(displayMetrics);
 
-        clickViewHorizontal = (ClickView_horizontal) findViewById(R.id.clickview_horizontal);
-       clickViewHorizontal.setDisplayMetrics(displayMetrics);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            clickViewVertical = (ClickViewVertical) findViewById(R.id.clickview_vertical);
+            clickViewVertical.setDisplayMetrics(displayMetrics);
 
-        sensorView = new SensorView(this);
-        sensorView.setDisplayMetrics(displayMetrics);
+            clickViewHorizontal = (ClickViewHorizontal) findViewById(R.id.clickview_horizontal);
+            clickViewHorizontal.setDisplayMetrics(displayMetrics);
+        } else {
+            sensorView = (SensorView) findViewById(R.id.sensor_view);
+            sensorView.setDisplayMetrics(displayMetrics);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        OrientationProvider orientationProvider = OrientationProvider.getInstance();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            OrientationProvider orientationProvider = OrientationProvider.getInstance();
 
-        orientationProvider.start(this);
-
-
+            orientationProvider.start(this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        OrientationProvider.getInstance().stop();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            OrientationProvider.getInstance().stop();
+        }
 
     }
 

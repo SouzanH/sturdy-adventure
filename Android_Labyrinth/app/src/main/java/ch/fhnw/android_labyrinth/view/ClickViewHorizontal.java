@@ -12,7 +12,7 @@ import android.view.View;
 
 import ch.fhnw.android_labyrinth.activity.MainActivity;
 
-public class ClickView_vertical extends View {
+public class ClickViewHorizontal extends View {
 
     private static final String TAG = "ClickView";
 
@@ -28,7 +28,7 @@ public class ClickView_vertical extends View {
     private DisplayMetrics displayMetrics;
 
 
-    public ClickView_vertical(Context context, AttributeSet attributeSet) {
+    public ClickViewHorizontal(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
 
         // create the Paint and set its color
@@ -37,7 +37,7 @@ public class ClickView_vertical extends View {
         paint.setTextSize(40);
 
 
-        setOnTouchListener(new OnTouchListener() {
+        setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
@@ -64,7 +64,7 @@ public class ClickView_vertical extends View {
 
         // Draw a small circle in the middle
         paint.setColor(Color.WHITE);
-        canvas.drawLine(displayMetrics.widthPixels, 0.0f, displayMetrics.widthPixels, displayMetrics.heightPixels, paint);
+        canvas.drawLine(0.0f, displayMetrics.heightPixels/2f, displayMetrics.widthPixels*2, displayMetrics.heightPixels/2f, paint);
         canvas.drawCircle(displayMetrics.widthPixels, displayMetrics.heightPixels/2f, 10, paint);
         paint.setColor(Color.DKGRAY);
         canvas.drawCircle(displayMetrics.widthPixels, displayMetrics.heightPixels/2f, 9, paint);
@@ -73,7 +73,7 @@ public class ClickView_vertical extends View {
         // Draw a line to the selected point
         if (lineDrawEnabled) {
 
-            canvas.drawCircle(displayMetrics.widthPixels, clickPosY, 8, paint);
+            canvas.drawCircle(clickPosX, displayMetrics.heightPixels/2f, 8, paint);
             canvas.drawText("(" + clickPosX + "/" + clickPosY + ")", 8, 53, paint);
             canvas.drawText("(" + (int)(clickPosX /x_factor) + "/" + (int)(clickPosY /y_factor) + ")", 8, 106, paint);
         }
@@ -83,11 +83,11 @@ public class ClickView_vertical extends View {
         this.displayMetrics = displayMetrics;
         this.displayMetrics.widthPixels=displayMetrics.widthPixels/2;
         calculateDisplaySize();
-        clickPosY = displayMetrics.heightPixels/2.0f;
+        clickPosX = displayMetrics.widthPixels;
     }
 
     private void calculateDisplaySize() {
-        this.x_factor = displayMetrics.widthPixels / 180f;
+        this.x_factor = displayMetrics.widthPixels /(2f* 180f);
         this.y_factor = displayMetrics.heightPixels / 180f;
 
         Log.d(TAG, "Display width in px is " + displayMetrics.widthPixels);
